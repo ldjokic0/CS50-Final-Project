@@ -1,6 +1,9 @@
-from bs4 import BeautifulSoup
 import requests
+import requests_async
+import aiohttp
+import asyncio
 import time
+from bs4 import BeautifulSoup
 #from price_parser import Price
 
 def find_last_page(soup):
@@ -11,28 +14,37 @@ def find_last_page(soup):
 
     return int(last_page)
 
-# TODO
-# Search all pages based on keywords - category - price with descanding order of prices
-### First iteration of the program will just search all pages and add items and their prics to dict
+async def get_item_data(urls):
+
+    async with aiohttp.ClientSession() as session:
+
+        tasks = []
+        for url in urls:
+            task = asyncio.create_task(requests_async.get(url))
+            tasks.append(task)
+
+        responses = await asyncio.gather(*tasks)
+
+        return responses
 
 link = "https://novi.kupujemprodajem.com/pretraga?keywords=thinkpad&hasPrice=yes&order=price%20desc&page=1"
 
 page = requests.get(link)
 soup = BeautifulSoup(page.content, 'html.parser')
-
+last_page = find_last_page(soup)
+# Make list of all urls
+urls = [link[:-1] + str(i) for i in range(1, last_page + 1)]
 all_data = {}
+
+start_time = time.time()
+responses = asyncio.run(get_item_data(urls))
+print("--- %s seconds ---" % (time.time() - start_time))
+
 
 # Item counter is neccessary due to same item names occurence
 item_counter = 0
-last_page = find_last_page(soup)
-
-start_time = time.time()
-
-for i in range(1, last_page + 1):
-    
-    link = "https://novi.kupujemprodajem.com/pretraga?keywords=thinkpad&hasPrice=yes&order=price%20desc&page=" + str(i)
-    page = requests.get(link)
-    soup = BeautifulSoup(page.content, 'html.parser')
+for response in responses:
+    soup = BeautifulSoup(response.decode('utf-8'), 'html.parser')
 
     item_names = soup.find_all('div', attrs={'class':'AdItem_name__BppRQ'})
     item_prices = soup.find_all('div', attrs={'class':'AdItem_price__k0rQn'})
@@ -45,9 +57,4 @@ for i in range(1, last_page + 1):
 
     item_counter += len(get_item_names)
 
-print("--- %s seconds ---" % (time.time() - start_time))
-#print(len(all_data.values()))
-#print(all_data)
-
-### Utilize later to distinguish prices from eur and rsd
-#price = Price.fromstring(get_item_prices[count])
+print(len(all_data))
