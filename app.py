@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import requests
 import time
 from concurrent.futures import ProcessPoolExecutor
@@ -9,7 +9,8 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 @app.route("/")
 def index():
-    return "INDEX PAGE UNDER CONSTRUCTION"
+    return render_template("home.html")
+
 
 def find_last_page(soup):
     # Classes are predifined by looking them up on the website

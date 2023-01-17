@@ -1,0 +1,26 @@
+{% extends "template.html" %}
+
+{% block title %} Home page {% endblock %}
+
+{% block main %}
+
+Welcome! In the search field below you can enter an item and choose from which website should data be fetched.
+Notes: More specific the name of the item is the more precise search will be.
+<form>
+  <div class="form-group">
+    <fieldset>
+      <label class="form-label mt-4" for="readOnlyInput">Search</label>
+      <input class="form-control" id="readOnlyInput" type="text" placeholder="Input " readonly="">
+    </fieldset>
+  </div>
+
+  <div class="form-group">
+    <label for="exampleSelect" class="form-label mt-4">Select the source website</label>
+    <select class="form-select" id="exampleSelect">
+      <option>Kupujemprodajem</option>
+      <option>Polovniautomobili</option>
+    </select>
+  </div>
+</form>
+
+{% endblock %}
