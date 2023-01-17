@@ -10,12 +10,14 @@
         <link rel="stylesheet" href="../static/prism-okaidia.css">
         <link rel="stylesheet" href="../static/custom.min.css">
 
+        <link rel="stylesheet" href="../static/styles.css">
+
         <title>#######: {% block title %}{% endblock %}</title>
     </head>
     <body>
         <div class="navbar navbar-expand-lg navbar-dark bg-primary">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Navbar</a>
+              <a class="navbar-brand" href="/">SAH</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -27,24 +29,14 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Features</a>
+                    <a class="nav-link" href="#">Search history</a>
                   </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Pricing</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                    <div class="dropdown-menu">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Separated link</a>
-                    </div>
-                  </li>
+
+                  <ul class="navbar-nav ">
+                    <li class="nav-item ">
+                      <a class="nav-link" href="#">About</a>
+                    </li>
+                  </ul>
                 </ul>
                 <!--
                 <form class="d-flex">
@@ -56,7 +48,7 @@
             </div>
           </div>
 
-          <main class="container-fluid py-5 text-center">
+          <main class="container py-5 text-center">
             {% block main %}{% endblock %}
           </main>
 

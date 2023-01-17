@@ -4,21 +4,26 @@
 
 {% block main %}
 
-Welcome! In the search field below you can enter an item and choose from which website should data be fetched.
-Notes: More specific the name of the item is the more precise search will be.
+<h1>Welcome!</h1>
+
+<p style ="padding-top: 20px;"><strong>SAH </strong>(<em>Search analyzer and helper</em>) will start searching on one of the two most popular websites for buying
+  in the Republic of Serbia (<a href="https://novi.kupujemprodajem.com/"><em>Kupujem prodajem </em></a>and <a href="https://www.polovniautomobili.com/"><em>Polovni automobili</em></a>) 
+  based on your input and it will give you information about prices.</p>
+<p>You will be able to see the mean price and the graph that will represent all the prices. Besides that, some additional information about prices will be given.</p>
+<p class="text-success">It is recommended to type in more specific input to provide a more relevant search results.</p>
+
 <form>
-  <div class="form-group">
-    <fieldset>
-      <label class="form-label mt-4" for="readOnlyInput">Search</label>
-      <input class="form-control" id="readOnlyInput" type="text" placeholder="Input " readonly="">
-    </fieldset>
+  <div class="form-group center-narrow">
+    <label class="col-form-label mt-4" for="inputDefault">Search bar</label>
+    <input type="text" class="form-control" placeholder="Input" id="inputDefault">
   </div>
 
-  <div class="form-group">
+  <div class="form-group center-narrow">
     <label for="exampleSelect" class="form-label mt-4">Select the source website</label>
     <select class="form-select" id="exampleSelect">
-      <option>Kupujemprodajem</option>
-      <option>Polovniautomobili</option>
+      <option disabled="disabled" selected="selected">Select one option</option>
+      <option>Kupujem prodajem</option>
+      <option>Polovni automobili</option>
     </select>
   </div>
 </form>
