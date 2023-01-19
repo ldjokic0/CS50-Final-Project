@@ -11,6 +11,14 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 def index():
     return render_template("home.html")
 
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    return render_template("register.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    return render_template("login.html")
+
 
 def find_last_page(soup):
     # Classes are predifined by looking them up on the website
