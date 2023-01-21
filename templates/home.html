@@ -14,20 +14,25 @@
 <p>You will be able to see the mean price and the graph that will represent all the prices. Besides that, some additional information about prices will be given.</p>
 <p class="text-success">It is recommended to type in more specific input to provide a more relevant search results.</p>
 
-<form>
+<form action="/" method="post">
   <div class="form-group center-narrow">
     <label class="col-form-label mt-4" for="inputDefault">Search bar</label>
-    <input type="text" class="form-control" placeholder="Input" id="inputDefault">
+    <input type="text" class="form-control" placeholder="Input" name="keyword">
   </div>
 
   <div class="form-group center-narrow">
-    <label for="exampleSelect" class="form-label mt-4">Select the source website</label>
-    <select class="form-select" id="exampleSelect">
+    <label for="selected_website" class="form-label mt-4">Select the source website</label>
+    <select class="form-select" name="selected_website">
       <option disabled="disabled" selected="selected">Select one option</option>
       <option>Kupujem prodajem</option>
       <option disabled="disabled">Polovni automobili (currently unavailable)</option>
     </select>
   </div>
+
+  <div class="form-group center-narrow">
+    <button class="btn btn-primary mt-4" type="submit">Search</button>
+  </div>
+
 </form>
 
 {% endblock %}
