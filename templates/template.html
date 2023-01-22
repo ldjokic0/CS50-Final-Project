@@ -15,10 +15,14 @@
       <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" ></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
 
-      <title>#######: {% block title %}{% endblock %}</title>
+      <title>{% block title %}{% endblock %}</title>
 
     </head>
     <body>
+      {% set navigation_bar_LEFT = [('/', 'Home'), ('/search_history', 'Search history'), ('/about', 'About')] %}
+      {% set navigation_bar_RIGHT = [('/register', 'Register'), ('/login', 'Login')] %}
+      {% set active_page = active_page|default('home') %}
+
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">SAH</a>
@@ -27,25 +31,26 @@
           </button>
           <div class="navbar-collapse collapse show" id="navbarColor01" style="">
             <ul class="navbar-nav me-auto">
-              <li class="nav-item">
-                <a class="nav-link active" href="/">Home
-                  <span class="visually-hidden">(current)</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Search history</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-              </li>
+              {% for href, caption in navigation_bar_LEFT %}
+                <li class = "nav-item">
+                  {% if caption == active_page %}
+                  <a class="nav-link active" href="{{ href }}">{{ caption }}</a>
+                  {% else %} 
+                  <a class="nav-link" href="{{ href }}">{{ caption }}</a>
+                  {% endif %}
+                </li>
+              {% endfor %}
             </ul>
             <ul class="navbar-nav ml-auto">
+              {% for href, caption in navigation_bar_RIGHT %}
               <li class="nav-item">
-                <a class="nav-link" href="/register">Register</a>
+                {% if caption == active_page %}
+                <a class="nav-link active" href="{{ href }}">{{ caption }}</a>
+                {% else %}
+                <a class="nav-link" href="{{ href }}">{{ caption }}</a>
+                {% endif %}
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
-              </li>
+              {% endfor %}
             </ul>
           </div>
         </div>
