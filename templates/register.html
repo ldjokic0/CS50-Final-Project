@@ -10,19 +10,27 @@
 <p style ="padding-top: 20px;">Registration will allow you to access search history!</p>
 <p>In search history each user will have access to previous searches and can compare prices between searched items.</p>
 
-<form action="/register" method="post">
+<form action="/register" method="post" autocomplete="off">
+  {% if warning %}
+  <div class="form-group center-narrow has-danger">
+    <label class="form-label mt-4" for="InvalidUsername">Username</label>
+    <input type="text" class="form-control is-invalid" name="InvalidUsername">
+    <div class="invalid-feedback">Please fill out this field.</div>
+  </div>
+  {% else %} 
   <div class="form-group center-narrow">
-    <label class="col-form-label mt-4" for="inputDefault">Username</label>
-    <input type="text" class="form-control" placeholder="Enter username" id="username">
+    <label class="col-form-label mt-4" for="username">Username</label>
+    <input type="text" class="form-control" placeholder="Enter username" name="username">
+  </div>
+  {% endif %}
+
+  <div class="form-group center-narrow">
+    <label class="col-form-label mt-4" for="password">Password</label>
+    <input type="password" class="form-control" placeholder="Enter password" name="password">
   </div>
 
   <div class="form-group center-narrow">
-    <label class="col-form-label mt-4" for="inputDefault">Password</label>
-    <input type="password" class="form-control" placeholder="Enter password" id="password">
-  </div>
-
-  <div class="form-group center-narrow">
-    <button class="btn btn-primary mt-4" type="button">Register</button>
+    <button class="btn btn-primary mt-4" type="submit">Register</button>
   </div>
 
 </form>
