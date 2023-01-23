@@ -18,21 +18,25 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response """
+
 # Define warning message when required field is not filled
-generic_warning = "Please fill out this field."
+generic_warning_message = "Please fill out this field."
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
-        keyword = request.form.get("keyword")
-        # Works just for kupujemprodajem for now
-        website = request.form.get("selected_website")
-        if not keyword:
-            # TODO: Add invalid input notification
-            return render_template("home.html")
+        # Ensure user provides search word and selects website
+        if not request.form.get("keyword"):
+            return render_template("home.html", warning = generic_warning_message, search_error = True)
+        elif not request.form.get("selected_website"):
+            return render_template("home.html", warning = "Please select website.", select_error = True)
 
+        keyword = request.form.get("keyword")
+        website = request.form.get("selected_website")
+
+        # Utilizes function for searching items from kp (short for kupujemprodajem) website
         items, count = kp_search(keyword)
-        #TODO: Add items to SQL database
+        #TODO: Add items to SQL database if user is logged in
 
         print(keyword, website, count)
         return render_template("home.html")
@@ -45,7 +49,7 @@ def register():
     if request.method == "POST":
         # Ensure user provides username
         if not request.form.get("username"):
-            return render_template("register.html", warning = generic_warning, username_error = True)
+            return render_template("register.html", warning = generic_warning_message, username_error = True)
 
         row = db.execute("SELECT * FROM users WHERE username = ?", (request.form.get("username"), ))
         check_username = row.fetchone()
@@ -54,9 +58,9 @@ def register():
         if check_username:
             return render_template("register.html", warning = f'Username "{check_username[1]}" is taken.', username_error = True)
         elif not request.form.get("password"):
-            return render_template("register.html", warning = generic_warning, password_error = True)
+            return render_template("register.html", warning = generic_warning_message, password_error = True)
         elif not request.form.get("confirmation"):
-            return render_template("register.html", warning = generic_warning, confirmation_error = True)
+            return render_template("register.html", warning = generic_warning_message, confirmation_error = True)
         elif not request.form.get("password") == request.form.get("confirmation"):
             return render_template("register.html", warning = "Password do not match.", confirmation_error = True)
         
@@ -91,9 +95,9 @@ def login():
     if request.method == "POST":
         # Ensure user provides username and password
         if not request.form.get("username"):
-            return render_template("login.html", warning = generic_warning, username_error = True)
+            return render_template("login.html", warning = generic_warning_message, username_error = True)
         elif not request.form.get("password"):
-            return render_template("login.html", warning = generic_warning, password_error = True)
+            return render_template("login.html", warning = generic_warning_message, password_error = True)
 
         row = db.execute("SELECT * FROM users WHERE username = ?", (request.form.get("username"), ))
         check_username_password = row.fetchone()
@@ -115,9 +119,11 @@ def login():
 
 @app.route("/logout",  methods=["GET"])
 def logout():
+
     # Check if user is loged in
     if "user" in session:
         session.clear()
         return redirect("/")
+
     # If user is not loged in redirect to current page
     return redirect(request.referrer)
