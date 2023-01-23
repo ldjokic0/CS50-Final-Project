@@ -5,17 +5,16 @@
 {% block title %} Register {% endblock %}
 
 {% block main %}
-
 <h1>Register for improved experience!</h1>
 <p style ="padding-top: 20px;">Registration will allow you to access search history!</p>
 <p>In search history each user will have access to previous searches and can compare prices between searched items.</p>
 
 <form action="/register" method="post" autocomplete="off">
-  {% if warning %}
+  {% if username_error %}
   <div class="form-group center-narrow has-danger">
     <label class="form-label mt-4" for="InvalidUsername">Username</label>
     <input type="text" class="form-control is-invalid" name="InvalidUsername">
-    <div class="invalid-feedback">Please fill out this field.</div>
+    <div class="invalid-feedback">{{ warning }}</div>
   </div>
   {% else %} 
   <div class="form-group center-narrow">
@@ -23,16 +22,36 @@
     <input type="text" class="form-control" placeholder="Enter username" name="username">
   </div>
   {% endif %}
-
+  {% if password_error %}
+  <div class="form-group center-narrow has-danger">
+    <label class="form-label mt-4" for="InvalidPassword">Password</label>
+    <input type="text" class="form-control is-invalid" name="InvalidPassword">
+    <div class="invalid-feedback">{{ warning }}</div>
+  </div>
+  {% else %}
   <div class="form-group center-narrow">
     <label class="col-form-label mt-4" for="password">Password</label>
     <input type="password" class="form-control" placeholder="Enter password" name="password">
+    <div class="alert alert-dismissible alert-secondary mt-1">
+      <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+      <small>Password must contain at least one uppercase character one lowercase character and one number.</small>
+    </div>
   </div>
-
+  {% endif %}
+  {% if confirmation_error %}
+  <div class="form-group center-narrow has-danger">
+    <label class="form-label mt-4" for="InvalidConfirmation">Repeat password</label>
+    <input type="text" class="form-control is-invalid" name="InvalidConfirmation">
+    <div class="invalid-feedback">{{ warning }}</div>
+  </div>
+  {% else %}
+  <div class="form-group center-narrow">
+    <label class="col-form-label mt-4" for="confirmation">Repeat password</label>
+    <input type="password" class="form-control" placeholder="Enter password" name="confirmation">
+  </div>
+  {% endif %}
   <div class="form-group center-narrow">
     <button class="btn btn-primary mt-4" type="submit">Register</button>
   </div>
-
 </form>
-
 {% endblock %}

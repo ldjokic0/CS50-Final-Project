@@ -38,12 +38,24 @@ def index():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    print("dada")
+    
     if request.method == "POST":
-        
+        generic_warning = "Please fill out this field."
         if not request.form.get("username"):
-            return render_template("register.html", warning = True)
+            return render_template("register.html", warning = generic_warning, username_error = True)
 
+        row = db.execute("SELECT * FROM users WHERE username = ?", (request.form.get("username"),))
+        check_username = row.fetchone()
+
+        if check_username:
+            return render_template("register.html", warning = f'Username "{check_username[1]}" is taken.', username_error = True)
+        elif not request.form.get("password"):
+            return render_template("register.html", warning = generic_warning, password_error = True)
+        elif not request.form.get("confirmation"):
+            return render_template("register.html", warning = generic_warning, confirmation_error = True)
+        elif not request.form.get("password") == request.form.get("confirmation"):
+            return render_template("register.html", warning = "Password do not match.", confirmation_error = True)
+        
         # TODO: Add conditions for password (atleast 6 letters with alphanumeric and numeric characters), check if username already exists
 
         username = request.form.get("username")
