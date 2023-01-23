@@ -13,7 +13,7 @@
   {% if username_error %}
   <div class="form-group center-narrow has-danger">
     <label class="form-label mt-4" for="username">Username</label>
-    <input type="text" class="form-control is-invalid" name="username">
+    <input type="text" class="form-control is-invalid" placeholder="Enter username" name="username">
     <div class="invalid-feedback">{{ warning }}</div>
   </div>
   {% else %} 
@@ -25,7 +25,7 @@
   {% if password_error %}
   <div class="form-group center-narrow has-danger">
     <label class="form-label mt-4" for="password">Password</label>
-    <input type="password" class="form-control is-invalid" name="password">
+    <input type="password" class="form-control is-invalid" placeholder="Enter password" name="password">
     <div class="invalid-feedback">{{ warning }}</div>
     <div class="alert alert-dismissible alert-secondary mt-1">
       <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
@@ -45,13 +45,13 @@
   {% if confirmation_error %}
   <div class="form-group center-narrow has-danger">
     <label class="form-label mt-4" for="confirmation">Repeat password</label>
-    <input type="password" class="form-control is-invalid" name="confirmation">
+    <input type="password" class="form-control is-invalid" placeholder="Repeat password" name="confirmation">
     <div class="invalid-feedback">{{ warning }}</div>
   </div>
   {% else %}
   <div class="form-group center-narrow">
     <label class="col-form-label mt-4" for="confirmation">Repeat password</label>
-    <input type="password" class="form-control" placeholder="Enter password" name="confirmation">
+    <input type="password" class="form-control" placeholder="Repeat password" name="confirmation">
   </div>
   {% endif %}
   <div class="form-group center-narrow">

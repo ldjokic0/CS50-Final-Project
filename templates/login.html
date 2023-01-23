@@ -5,24 +5,34 @@
 {% block title %} Login {% endblock %}
 
 {% block main %}
-
 <h1>Welcome back!</h1>
-
 <form action="/login" method="post">
+  {% if username_error %}
+  <div class="form-group center-narrow has-danger">
+    <label class="form-label mt-4" for="username">Username</label>
+    <input type="text" class="form-control is-invalid" name="username">
+    <div class="invalid-feedback">{{ warning }}</div>
+  </div>
+  {% else %}
   <div class="form-group center-narrow">
     <label class="col-form-label mt-4" for="inputDefault">Username</label>
-    <input type="text" class="form-control" placeholder="Enter username" id="username">
+    <input type="text" class="form-control" placeholder="Enter username" name="username">
   </div>
-
+  {% endif %}
+  {% if password_error %}
+  <div class="form-group center-narrow has-danger">
+    <label class="form-label mt-4" for="password">Username</label>
+    <input type="password" class="form-control is-invalid" name="password">
+    <div class="invalid-feedback">{{ warning }}</div>
+  </div>
+  {% else %}
   <div class="form-group center-narrow">
     <label class="col-form-label mt-4" for="inputDefault">Password</label>
-    <input type="password" class="form-control" placeholder="Enter password" id="password">
+    <input type="password" class="form-control" placeholder="Enter password" name="password">
   </div>
-
+  {% endif %}
   <div class="form-group center-narrow">
     <button class="btn btn-primary mt-4" type="submit">Login</button>
   </div>
-
 </form>
-
 {% endblock %}
