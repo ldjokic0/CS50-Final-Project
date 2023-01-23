@@ -3,6 +3,7 @@ from pull_data import kp_search
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 
+
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SESSION_PERMANENT"] = False
@@ -37,6 +38,9 @@ def index():
         # Utilizes function for searching items from kp (short for kupujemprodajem) website
         items, count = kp_search(keyword)
         #TODO: Add items to SQL database if user is logged in
+        for item in items:
+            print(item.name)
+            print(item.price)
 
         print(keyword, website, count)
         return render_template("home.html")

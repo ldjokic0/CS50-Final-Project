@@ -2,14 +2,52 @@ import requests
 import time
 from concurrent.futures import ProcessPoolExecutor
 from bs4 import BeautifulSoup
+from price_parser import Price
+
+class Item:
+    def __init__(self, name, price, page):
+        self.name = name
+        self.price = price
+        self.page = page
+
+# Get current exchange rate for RSD to EUR
+def current_exchange_rate():
+
+    page = requests.get("https://www.kursna-lista.info/valuta/eur-evro")
+    soup = BeautifulSoup(page.content, 'lxml')
+    element_by_id=soup.find('div', {'id':'largeDisplay'})
+    find_p = element_by_id.find_all('p')
+
+    current_exchange_rate_string = find_p[0].getText()
+    strings = current_exchange_rate_string.split()
+    # Third string in list 'strings' is the middle exchage rate 
+    rate = float(strings[3].replace(',','.'))
+
+    return print(rate)
+
+# Convert string to price 
+def adjust_price(price_string):
+    price_and_currency = Price.fromstring(price_string)
+    if price_and_currency.currency == '€':
+        return float(price_and_currency.amount)
+    else:
+        # Slows down search due to conversion, alternative is to define constant value for exchange rate
+        #return price_and_currency.amount * 117
+        return price_and_currency.amount * current_exchange_rate()
 
 def kp_find_last_page(soup):
     # Classes are predifined by looking them up on the kupujemprodajem website
     page_pagination = soup.select('a.Link_link__J4Qd8.Button_base__Pz8U1.Button_inherit___tUxa.Pagination_item__usZku')
     page_numeration = [page_num.find_all('span') for page_num in page_pagination]
-    last_page = page_numeration[-1][0].getText()
 
-    return int(last_page)
+    # Check if there is just one page
+    if page_numeration:
+        last_page = page_numeration[-1][0].getText()
+        return int(last_page)
+    else:
+        last_page = 1
+
+    return last_page
 
 def fetch_url_data(pg_url):
     try:
@@ -26,8 +64,8 @@ def get_all_url_data(url_list):
     
 def get_items(responses):
     # Empty dictionary that will contain name and price of the items
-    items = {}
-    item_counter = 0
+    item_list = []
+    item_counter, page_num = 0, 1
 
     start_time = time.time()
     for response in responses:
@@ -41,13 +79,15 @@ def get_items(responses):
         get_item_prices = [price.getText() for price in item_prices]
 
         for count, name in enumerate(get_item_names):
-            items[str(item_counter + count) + name] = get_item_prices[count]
+            price = adjust_price(get_item_prices[count])
+            item_list.append(Item(name, price, page_num))
 
         item_counter += len(get_item_names)
+        page_num += 1
 
     total_time = "%s seconds" % (time.time() - start_time)
 
-    return items, item_counter, total_time
+    return item_list, item_counter, total_time
 
 def kp_search(keyword):
     # Check and replace spaces in keyword
