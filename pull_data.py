@@ -13,7 +13,12 @@ class Item:
 # Get current exchange rate for RSD to EUR
 def current_exchange_rate():
 
-    page = requests.get("https://www.kursna-lista.info/valuta/eur-evro")
+    # If there is problem with loading page, aproximate exchange rate will be used
+    try:
+        page = requests.get("https://www.kursna-lista.info/valuta/eur-evro")
+    except:
+        return 117.5
+
     soup = BeautifulSoup(page.content, 'lxml')
     element_by_id=soup.find('div', {'id':'largeDisplay'})
     find_p = element_by_id.find_all('p')
@@ -23,7 +28,7 @@ def current_exchange_rate():
     # Third string in list 'strings' is the middle exchage rate 
     rate = float(strings[3].replace(',','.'))
 
-    return print(rate)
+    return rate
 
 # Convert string to price 
 def adjust_price(price_string):
@@ -32,7 +37,7 @@ def adjust_price(price_string):
         return float(price_and_currency.amount)
     else:
         # Slows down search due to conversion, alternative is to define constant value for exchange rate
-        #return price_and_currency.amount * 117
+        #return price_and_currency.amount * 117.5
         return price_and_currency.amount * current_exchange_rate()
 
 def kp_find_last_page(soup):
