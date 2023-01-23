@@ -12,8 +12,8 @@
 <form action="/register" method="post" autocomplete="off">
   {% if username_error %}
   <div class="form-group center-narrow has-danger">
-    <label class="form-label mt-4" for="InvalidUsername">Username</label>
-    <input type="text" class="form-control is-invalid" name="InvalidUsername">
+    <label class="form-label mt-4" for="username">Username</label>
+    <input type="text" class="form-control is-invalid" name="username">
     <div class="invalid-feedback">{{ warning }}</div>
   </div>
   {% else %} 
@@ -24,9 +24,13 @@
   {% endif %}
   {% if password_error %}
   <div class="form-group center-narrow has-danger">
-    <label class="form-label mt-4" for="InvalidPassword">Password</label>
-    <input type="text" class="form-control is-invalid" name="InvalidPassword">
+    <label class="form-label mt-4" for="password">Password</label>
+    <input type="password" class="form-control is-invalid" name="password">
     <div class="invalid-feedback">{{ warning }}</div>
+    <div class="alert alert-dismissible alert-secondary mt-1">
+      <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
+      <small>Password must contain 6 characters including at least one uppercase character one lowercase character and one number.</small>
+    </div>
   </div>
   {% else %}
   <div class="form-group center-narrow">
@@ -34,14 +38,14 @@
     <input type="password" class="form-control" placeholder="Enter password" name="password">
     <div class="alert alert-dismissible alert-secondary mt-1">
       <button type="button" class="btn-close btn-sm" data-bs-dismiss="alert"></button>
-      <small>Password must contain at least one uppercase character one lowercase character and one number.</small>
+      <small>Password must contain 6 characters including at least one uppercase character one lowercase character and one number.</small>
     </div>
   </div>
   {% endif %}
   {% if confirmation_error %}
   <div class="form-group center-narrow has-danger">
-    <label class="form-label mt-4" for="InvalidConfirmation">Repeat password</label>
-    <input type="text" class="form-control is-invalid" name="InvalidConfirmation">
+    <label class="form-label mt-4" for="confirmation">Repeat password</label>
+    <input type="password" class="form-control is-invalid" name="confirmation">
     <div class="invalid-feedback">{{ warning }}</div>
   </div>
   {% else %}

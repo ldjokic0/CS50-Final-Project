@@ -56,10 +56,19 @@ def register():
         elif not request.form.get("password") == request.form.get("confirmation"):
             return render_template("register.html", warning = "Password do not match.", confirmation_error = True)
         
-        # TODO: Add conditions for password (atleast 6 letters with alphanumeric and numeric characters), check if username already exists
-
         username = request.form.get("username")
         password = request.form.get("password")
+
+        numerical_characters = [str(x) for x in range(10)]
+        if len(password) < 6:
+            return render_template("register.html", warning = "Password must contain 6 characters.", password_error = True)
+        elif not any(letter.isupper() for letter in password):
+            return render_template("register.html", warning = "Password does not contain uppercase character.", password_error = True)
+        elif not any(letter.islower() for letter in password):
+            return render_template("register.html", warning = "Password does not contain lowercase character.", password_error = True)
+        elif not any(number in password for number in numerical_characters):
+            return render_template("register.html", warning = "Password does not contain number", password_error = True)
+
         hash_password = generate_password_hash(password)
 
         db.execute("INSERT INTO users (username, hash_password) VALUES (?, ?)", (username, hash_password))
