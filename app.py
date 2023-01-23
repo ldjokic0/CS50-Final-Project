@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
+app.secret_key = generate_password_hash("Not very secret key")
 
 con = sqlite3.connect('SAH.db', check_same_thread=False)
 db = con.cursor()
@@ -74,10 +75,24 @@ def register():
         db.execute("INSERT INTO users (username, hash_password) VALUES (?, ?)", (username, hash_password))
         con.commit()
 
+        session["user"] = username
+
         return render_template("home.html")
 
     return render_template("register.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
+    if request.method == "POST":
+
+        return render_template("login.html")
+
     return render_template("login.html")
+
+@app.route("/logout",  methods=["GET"])
+def logout():
+    if "user" in session:
+        session.clear()
+        return redirect("/")
+    return redirect(request.referrer)
