@@ -38,6 +38,7 @@ def index():
 
         # Utilizes function for searching items from kp (short for kupujemprodajem) website
         items, count = kp_search(keyword)
+        print(keyword, items)
         
         if not items:
             # Inform user that search does not produce results
@@ -51,7 +52,7 @@ def index():
             con.commit()
             # Get search_id
             search_history = db.execute("SELECT id FROM history WHERE user_id = ? AND time = ?", (session["id"], time))
-            search_id = search_history.fetchone()
+            search_id = search_history.fetchone()[0]
 
             for item in items:
                 db.execute("INSERT INTO search (search_id, item, price) VALUES (?, ?, ?)", (search_id, item.name, item.price))
