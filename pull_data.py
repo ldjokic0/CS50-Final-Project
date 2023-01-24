@@ -30,7 +30,7 @@ def current_exchange_rate():
 
     return rate
 
-# Convert string to price 
+# Convert strings to prices
 def adjust_price(price_string):
     price_and_currency = Price.fromstring(price_string)
     if price_and_currency.currency == '€':
