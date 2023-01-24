@@ -13,13 +13,13 @@ class Item:
 # Get current exchange rate for RSD to EUR
 def current_exchange_rate():
 
-    # If there is a problem with loading page, aproximate exchange rate will be used
+    # If there is problem with loading page, aproximate exchange rate will be used
     try:
         page = requests.get("https://www.kursna-lista.info/valuta/eur-evro")
     except:
         return 117.5
 
-    soup = BeautifulSoup(page.content, 'html.parser')
+    soup = BeautifulSoup(page.content, 'lxml')
     element_by_id=soup.find('div', {'id':'largeDisplay'})
     find_p = element_by_id.find_all('p')
 
@@ -38,7 +38,7 @@ def adjust_price(price_string):
     else:
         # Slows down search due to conversion, alternative is to define constant value for exchange rate
         return float(price_and_currency.amount) * 117.5
-        #return float(price_and_currency.amount) / current_exchange_rate()
+        #return float(price_and_currency.amount) * current_exchange_rate()
 
 def kp_find_last_page(soup):
     # Classes are predifined by looking them up on the kupujemprodajem website
@@ -62,55 +62,37 @@ def fetch_url_data(pg_url):
     else:
         return resp.content
         
-        
 def get_all_url_data(url_list):
     with ProcessPoolExecutor() as executor:
         resp = executor.map(fetch_url_data, url_list)
     return resp
-
-def get_data(response, page_num):
-
-    item_list, item_counter = [], 0
-
-    soup = BeautifulSoup(response, 'html.parser')
-
-    # TODO: Resolve problem when class is changed
-    item_names = soup.find_all('div', attrs={'class':'AdItem_name__80tI5'})
-    item_prices = soup.find_all('div', attrs={'class':'AdItem_price__jUgxi'})
-
-    get_item_names = [name.getText() for name in item_names]
-    get_item_prices = [price.getText() for price in item_prices]
-
-    for count, name in enumerate(get_item_names):
-        price = adjust_price(get_item_prices[count])
-        item_list.append(Item(name, price, page_num))
-
-    item_counter += len(get_item_names)
-
-    return item_list, item_counter
-
-#TODO: Make this function better
-def get_items(responses, n = 1):
+    
+def get_items(responses):
     # Empty dictionary that will contain name and price of the items
-    total_item_list = []
-    total_item_counter, page_num = 0, 1
+    item_list = []
+    item_counter, page_num = 0, 1
 
-    if n == 1:
-        start_time = time.time()
-        for response in responses:
-            item_list, item_counter = get_data(response, page_num)
-            total_item_counter += item_counter
-            total_item_list.extend(item_list)
-            page_num += 1
-        total_time = "%s seconds" % (time.time() - start_time)
-    elif n == 0:
-        start_time = time.time()
-        item_list, item_counter = get_data(responses.text, page_num)
-        total_item_counter += item_counter
-        total_item_list.extend(item_list)
-        total_time = "%s seconds" % (time.time() - start_time)
+    start_time = time.time()
+    for response in responses:
 
-    return total_item_list, total_item_counter, total_time
+        soup = BeautifulSoup(response, 'html.parser')
+
+        item_names = soup.find_all('div', attrs={'class':'AdItem_name__80tI5'})
+        item_prices = soup.find_all('div', attrs={'class':'AdItem_price__jUgxi'})
+
+        get_item_names = [name.getText() for name in item_names]
+        get_item_prices = [price.getText() for price in item_prices]
+
+        for count, name in enumerate(get_item_names):
+            price = adjust_price(get_item_prices[count])
+            item_list.append(Item(name, price, page_num))
+
+        item_counter += len(get_item_names)
+        page_num += 1
+
+    total_time = "%s seconds" % (time.time() - start_time)
+
+    return item_list, item_counter, total_time
 
 def kp_search(keyword):
     # Check and replace spaces in keyword
@@ -125,20 +107,13 @@ def kp_search(keyword):
     # Make list of all urls that will be searched
     urls = [link[:-1] + str(i) for i in range(1, last_page + 1)]
 
-    if len(urls) < 2:
-        for url in urls:
-            resp = requests.get(url)
-            items, item_count, _ = get_items(resp, n = 0)
-            return items, item_count 
-            
     responses = get_all_url_data(urls)
     items, item_count, _ = get_items(responses)
 
     return items, item_count
 
-
-if __name__ == '__main__':
+""" if __name__ == '__main__':
     items, item_count = kp_search("Dell Latitude E6540")
     print(item_count)
-    #for item in items:
-        #print(item.name, item.price)
+    for item in items:
+        print(item.name, item.price) """

@@ -38,7 +38,7 @@ def index():
 
         # Utilizes function for searching items from kp (short for kupujemprodajem) website
         items, count = kp_search(keyword)
-        print(keyword, items)
+        print(count)
         
         if not items:
             # Inform user that search does not produce results
