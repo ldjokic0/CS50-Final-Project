@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, redirect, render_template, request, session, flash
 from pull_data import kp_search
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
@@ -37,6 +37,10 @@ def index():
 
         # Utilizes function for searching items from kp (short for kupujemprodajem) website
         items, count = kp_search(keyword)
+        print(items)
+        if not items:
+            #TODO: Flash message that search does not produce results
+            flash(f"There are {count} results for {keyword}", "info")
         #TODO: Add items to SQL database if user is logged in
         for item in items:
             print(item.name)
@@ -96,6 +100,10 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
+    if "user" in session:
+        flash("You are already logged in!")
+        return render_template("login.html")
+
     if request.method == "POST":
         # Ensure user provides username and password
         if not request.form.get("username"):
@@ -115,6 +123,7 @@ def login():
         # Clear session if previous user was loged in and start new session 
         session.clear()
         session["user"] = check_username_password[1]
+        flash(f"{check_username_password[1]} have been logged in.")
 
         return redirect("/")
     else:
@@ -126,8 +135,10 @@ def logout():
 
     # Check if user is loged in
     if "user" in session:
+        user = session["user"]
         session.clear()
+        flash(f"{user} have been logged out.")
         return redirect("/")
 
-    # If user is not loged in redirect to current page
+    # If the user is not loged in, redirect to current page
     return redirect(request.referrer)

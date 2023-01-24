@@ -5,12 +5,18 @@
 {% block title %} Home page {% endblock %}
 
 {% block main %}
+  {% for message in get_flashed_messages() %}
+    <div class="alert alert-dismissible alert-light center-narrow mb-5">
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      {{ message }}
+    </div>
+  {% endfor %}
 
 <h1>Welcome!</h1>
 <p>You are tired of endlessly scroling and not having a clue what is too much to pay for some item?</p>
 <p>Well you are in luck today, with <strong>SAH </strong>(<em>Search analyzer and helper</em>) you will be able to have a good estimate about general prices and see what is the mean value so you do not overpay.</p>
 
-<p style ="padding-top: 20px;"><strong>SAH </strong>(<em>Search analyzer and helper</em>) will start searching on one of the two most popular websites for buying
+<p style="padding-top: 20px;"><strong>SAH </strong>(<em>Search analyzer and helper</em>) will start searching on one of the two most popular websites for buying
   in the Republic of Serbia (<a href="https://novi.kupujemprodajem.com/"><em>Kupujem prodajem </em></a>and <a href="https://www.polovniautomobili.com/"><em>Polovni automobili</em></a>) 
   based on your input and it will give you information about prices.</p>
 <p>You will be able to see the mean price and the graph that will represent all the prices. Besides that, some additional information about prices will be given.</p>

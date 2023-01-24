@@ -5,6 +5,13 @@
 {% block title %} Login {% endblock %}
 
 {% block main %}
+  {% for message in get_flashed_messages() %}
+  <div class="alert alert-dismissible alert-light center-narrow mb-5">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    {{ message }}
+  </div>
+  {% endfor %}
+
 <h1>Welcome back!</h1>
 <form action="/login" method="post">
   {% if username_error %}
