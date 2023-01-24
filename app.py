@@ -2,6 +2,7 @@ from flask import Flask, redirect, render_template, request, session, flash
 from pull_data import kp_search
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
+import datetime
 
 
 app = Flask(__name__)
@@ -25,6 +26,7 @@ generic_warning_message = "Please fill out this field."
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+
     if request.method == "POST":
         # Ensure user provides search word and selects website
         if not request.form.get("keyword"):
@@ -33,20 +35,30 @@ def index():
             return render_template("home.html", warning = "Please select website.", select_error = True)
 
         keyword = request.form.get("keyword")
-        website = request.form.get("selected_website")
 
         # Utilizes function for searching items from kp (short for kupujemprodajem) website
         items, count = kp_search(keyword)
-        print(items)
+        
         if not items:
-            #TODO: Flash message that search does not produce results
-            flash(f"There are {count} results for {keyword}", "info")
-        #TODO: Add items to SQL database if user is logged in
-        for item in items:
-            print(item.name)
-            print(item.price)
+            # Inform user that search does not produce results
+            flash(f"There are {count} results for '{keyword}'.")
+            return render_template("home.html")
 
-        print(keyword, website, count)
+        # Record search history and add items to SQL database if user is logged in
+        if "user" in session:
+            time = datetime.datetime.now()
+            db.execute("INSERT INTO history (user_id, search_keyword, time) VALUES (?, ?, ?)", (session["id"], keyword, time))
+            con.commit()
+            # Get search_id
+            search_history = db.execute("SELECT id FROM history WHERE user_id = ? AND time = ?", (session["id"], time))
+            search_id = search_history.fetchone()
+
+            for item in items:
+                db.execute("INSERT INTO search (search_id, item, price) VALUES (?, ?, ?)", (search_id, item.name, item.price))
+                con.commit()
+
+        flash(f"Search successful!\nThere are {count} results for '{keyword}'.")
+        # TODO: redirect to the results of the search
         return render_template("home.html")
     else:
         return render_template("home.html")
@@ -91,9 +103,8 @@ def register():
         db.execute("INSERT INTO users (username, hash_password) VALUES (?, ?)", (username, hash_password))
         con.commit()
 
-        session["user"] = username
-
-        return render_template("home.html")
+        flash("Registration successful, please proceed to log in.")
+        return redirect("/login")
 
     return render_template("register.html")
 
@@ -114,6 +125,11 @@ def login():
         row = db.execute("SELECT * FROM users WHERE username = ?", (request.form.get("username"), ))
         check_username_password = row.fetchone()
 
+        # If logged user try to log in again return him to home page
+        if "user" in session and session["user"] == check_username_password[1]:
+            flash("You are already logged in!")
+            return redirect("/")
+
         # Check if username exists and password is correct
         if not check_username_password:
             return render_template("login.html", warning = "Username does not exist.", username_error = True)
@@ -122,9 +138,10 @@ def login():
 
         # Clear session if previous user was loged in and start new session 
         session.clear()
+        session["id"] = check_username_password[0]
         session["user"] = check_username_password[1]
-        flash(f"{check_username_password[1]} have been logged in.")
-
+        
+        flash(f"Hi {check_username_password[1]}, you have been logged in.")
         return redirect("/")
     else:
         return render_template("login.html")
