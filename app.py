@@ -68,7 +68,16 @@ def index():
 def search_history():
 
     if "user" in session:
-        return render_template("search_history.html")
+        id = session["id"]
+
+        rows = db.execute("SELECT id, search_keyword, time FROM history WHERE user_id = ?", (id, ))
+        history = rows.fetchone()
+        rows = db.execute("SELECT COUNT(item) FROM search WHERE search_id = ?", (history[0], ))
+        count = rows.fetchone()
+        print(history[1], history[2], count[0])
+        results = [ [history[1], history[2], count[0]] ] # Add later [mean, median, mode]
+
+        return render_template("search_history.html", results = results)
 
     flash("You must be logged in to access search history.")
     return redirect("/")
