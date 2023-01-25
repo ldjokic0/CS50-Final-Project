@@ -5,6 +5,13 @@
 {% block title %} Register {% endblock %}
 
 {% block main %}
+  {% for message in get_flashed_messages() %}
+  <div class="alert alert-dismissible alert-light mb-5">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    {{ message }}
+  </div>
+  {% endfor %}
+
 <h1>Register for improved experience!</h1>
 <p style ="padding-top: 20px;">Registration will allow you to access search history!</p>
 <p>In search history each user will have access to previous searches and can compare prices between searched items.</p>

@@ -1,0 +1,19 @@
+{% extends "template.html" %}
+
+{% set active_page = "Search history" %}
+
+{% block title %} Search history {% endblock %}
+
+{% block main %}
+  {% for message in get_flashed_messages() %}
+    <div class="alert alert-dismissible alert-light mb-5">
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      {{ message }}
+    </div>
+  {% endfor %}
+
+{% if %}
+
+{% endif %}
+
+{% endblock %}

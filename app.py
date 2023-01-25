@@ -64,6 +64,15 @@ def index():
     else:
         return render_template("home.html")
 
+@app.route("/search_history", methods=["GET"])
+def search_history():
+
+    if "user" in session:
+        return render_template("search_history.html")
+
+    flash("You must be logged in to access search history.")
+    return redirect("/")
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     
@@ -159,4 +168,5 @@ def logout():
         return redirect("/")
 
     # If the user is not loged in, redirect to current page
+    flash("You are not logged in.")
     return redirect(request.referrer)
