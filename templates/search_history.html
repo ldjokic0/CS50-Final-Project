@@ -25,16 +25,16 @@
       </tr>
     </thead>
     <tbody>
+      {% for search_keyword, timestamp, count, mean, median in results %}
       <tr class="table-active">
-        {% for search_keyword, timestamp, count, mean, median in results %}
         <td>{{loop.index}}</td>
         <td>{{ search_keyword }}</td>
         <td>{{ timestamp }}</td>
         <td>{{ count }}</td>
         <td>&euro; {{ mean }}</td>
         <td>&euro; {{ median }}</td>
-        {% endfor %}
       </tr>
+      {% endfor %}
     </tbody>
 </table>
 {% endif %}

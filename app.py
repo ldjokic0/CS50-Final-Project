@@ -71,23 +71,27 @@ def search_history():
         id = session["id"]
 
         rows = db.execute("SELECT id, search_keyword, time FROM history WHERE user_id = ?", (id, ))
-        history = rows.fetchone()
-        
+        history = rows.fetchall()
+
         # Notifies user in case where they did not conduct any search
         if history == None:
             flash("Search history results are unavailable, you need to conduct a search first.")
             return render_template("search_history.html")
 
-        rows = db.execute("SELECT COUNT(item), AVG(price) FROM search WHERE search_id = ?", (history[0], ))
-        count_mean = rows.fetchone()
-        count, mean = count_mean[0], count_mean[1]
+        results = []
+        for search_id, search_keyword, time in history:
 
-        rows = db.execute("SELECT price FROM search WHERE search_id = ?", (history[0], ))
-        prices = rows.fetchall()
-        med = median(prices)
+            rows = db.execute("SELECT COUNT(item), AVG(price) FROM search WHERE search_id = ?", (search_id, ))
+            count_and_mean = rows.fetchone()
+            count, mean = count_and_mean[0], count_and_mean[1]
 
-        print(history[1], history[2], count, round(mean, 2), med[0])
-        results = [ [history[1], history[2], count, round(mean, 2), med[0]] ]
+            rows = db.execute("SELECT price FROM search WHERE search_id = ?", (search_id, ))
+            prices = rows.fetchall()
+            med = median(prices)
+
+            print(search_keyword, time, count, round(mean, 2), med[0])
+
+            results.append([search_keyword, time, count, round(mean, 2), med[0]])
 
         return render_template("search_history.html", results = results)
 
