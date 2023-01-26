@@ -63,7 +63,6 @@ def index():
         mean_price, median_price = round(mean(prices), 2), median(prices)
 
         flash(f"Search successful!\nThere are {count} results for '{keyword}', mean and median prices are {mean_price} € and {median_price} €, respectively.")
-        # TODO: redirect to the results of the search
         return render_template("home.html")
     else:
         return render_template("home.html")
