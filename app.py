@@ -3,7 +3,7 @@ from pull_data import kp_search
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 import datetime
-
+from statistics import median
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -47,7 +47,7 @@ def index():
 
         # Record search history and add items to SQL database if user is logged in
         if "user" in session:
-            time = datetime.datetime.now()
+            time = datetime.datetime.now().isoformat(sep=" ", timespec="seconds")
             db.execute("INSERT INTO history (user_id, search_keyword, time) VALUES (?, ?, ?)", (session["id"], keyword, time))
             con.commit()
             # Get search_id
@@ -72,10 +72,22 @@ def search_history():
 
         rows = db.execute("SELECT id, search_keyword, time FROM history WHERE user_id = ?", (id, ))
         history = rows.fetchone()
-        rows = db.execute("SELECT COUNT(item) FROM search WHERE search_id = ?", (history[0], ))
-        count = rows.fetchone()
-        print(history[1], history[2], count[0])
-        results = [ [history[1], history[2], count[0]] ] # Add later [mean, median, mode]
+        
+        # Notifies user in case where they did not conduct any search
+        if history == None:
+            flash("Search history results are unavailable, you need to conduct a search first.")
+            return render_template("search_history.html")
+
+        rows = db.execute("SELECT COUNT(item), AVG(price) FROM search WHERE search_id = ?", (history[0], ))
+        count_mean = rows.fetchone()
+        count, mean = count_mean[0], count_mean[1]
+
+        rows = db.execute("SELECT price FROM search WHERE search_id = ?", (history[0], ))
+        prices = rows.fetchall()
+        med = median(prices)
+
+        print(history[1], history[2], count, round(mean, 2), med[0])
+        results = [ [history[1], history[2], count, round(mean, 2), med[0]] ]
 
         return render_template("search_history.html", results = results)
 
