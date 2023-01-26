@@ -91,11 +91,12 @@ def search_history():
 
             rows = db.execute("SELECT price FROM search WHERE search_id = ?", (search_id, ))
             prices = rows.fetchall()
+            prices = [price[0] for price in prices]
             med = median(prices)
 
-            print(search_keyword, time, count, round(mean, 2), med[0])
+            print(search_keyword, time, count, round(mean, 2), med)
 
-            results.append([search_keyword, time, count, round(mean, 2), med[0]])
+            results.append([search_keyword, time, count, round(mean, 2), med])
 
         return render_template("search_history.html", results = results)
 
