@@ -3,7 +3,7 @@ from pull_data import kp_search
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 import datetime
-from statistics import median
+from statistics import mean, median
 
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -58,7 +58,11 @@ def index():
                 db.execute("INSERT INTO search (search_id, item, price) VALUES (?, ?, ?)", (search_id, item.name, item.price))
                 con.commit()
 
-        flash(f"Search successful!\nThere are {count} results for '{keyword}'.")
+        # Shows mean and median price to the user
+        prices = [item.price for item in items]
+        mean_price, median_price = round(mean(prices), 2), median(prices)
+
+        flash(f"Search successful!\nThere are {count} results for '{keyword}', mean and median prices are {mean_price} € and {median_price} €, respectively.")
         # TODO: redirect to the results of the search
         return render_template("home.html")
     else:
