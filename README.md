@@ -9,7 +9,7 @@ This web app, named SAH (Search analyzer and helper), implements the Flask web f
 
 ### Project files:
 1. app.py is main file where all flask web framework functionality is implemented.
-2. pull_data.py contains function used for data mining
+2. pull_data.py contains functions used for data mining.
 3. SAH.db is SQL database with three tables:
     - users - contains user id, username, and hashed password.
     - history - contains search id, user id, search keyword, and timestamp.
