@@ -12,19 +12,15 @@
     </div>
   {% endfor %}
 
-<h4 id="loading_header" style="display: none;" class="center-header mb-2">Please wait, search is in progress.</h4>
-<div class="progress" id="loading_bar" style="display: none;">
-  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
-</div>
+
 
 <h1>Welcome!</h1>
 <p>You are tired of endlessly scroling and not having a clue what is too much to pay for some item?</p>
 <p>Well you are in luck today, with <strong>SAH </strong>(<em>Search analyzer and helper</em>) you will be able to have a good estimate about general prices and see what is the mean value so you do not overpay.</p>
 
-<p style="padding-top: 20px;"><strong>SAH </strong>(<em>Search analyzer and helper</em>) will start searching on one of the two most popular websites for buying
+<p style="padding-top: 20px;">SAH will start searching on one of the two most popular websites for buying
   in the Republic of Serbia (<a href="https://novi.kupujemprodajem.com/"><em>Kupujem prodajem </em></a>and <a href="https://www.polovniautomobili.com/"><em>Polovni automobili</em></a>) 
   based on your input and it will give you information about prices.</p>
-<p>You will be able to see the mean price and the graph that will represent all the prices. Besides that, some additional information about prices will be given.</p>
 <p class="text-success">It is recommended to type in more specific input to provide a more relevant search results.</p>
 
 <form action="/" method="post" id="search_form" onsubmit="showLoading()">
@@ -64,6 +60,11 @@
     <button class="btn btn-primary mt-4" type="submit">Search</button>
   </div>
 </form>
+
+<h4 id="loading_header" style="display: none;" class="center-header mb-2 mt-4">Please wait, search is in progress.</h4>
+<div class="progress" id="loading_bar" style="display: none;">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+</div>
 
 <script>
   document.getElementById("loading_header").style.display = "none";
