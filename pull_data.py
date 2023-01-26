@@ -37,8 +37,8 @@ def adjust_price(price_string):
         return float(price_and_currency.amount)
     else:
         # Slows down search due to conversion, alternative is to define constant value for exchange rate
-        return float(price_and_currency.amount) * 117.5
-        #return float(price_and_currency.amount) * current_exchange_rate()
+        return round(float(price_and_currency.amount) / 117.5, 2)
+        #return round(float(price_and_currency.amount) / current_exchange_rate(), 2)
 
 def kp_find_last_page(soup):
     # Classes are predifined by looking them up on the kupujemprodajem website
