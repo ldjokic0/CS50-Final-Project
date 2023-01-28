@@ -200,3 +200,9 @@ def logout():
     # If the user is not loged in, redirect to current page
     flash("You are not logged in.")
     return redirect(request.referrer)
+
+@app.route("/about",  methods=["GET"])
+def about():
+    # If the user is not loged in, redirect to current page
+    flash("To be added.")
+    return render_template("about.html")
