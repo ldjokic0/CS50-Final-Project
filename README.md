@@ -1,6 +1,4 @@
-# CS50-Final-Project
-SAH (Search analyzer and helper)
-
+# SAH (Search analyzer and helper)
 
 ### Video Demo:  <[Flask web application - CS50 Final Project](https://youtu.be/Dvcl5UgBkaY)>
 ### Description:
