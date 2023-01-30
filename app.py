@@ -206,3 +206,7 @@ def about():
     # If the user is not loged in, redirect to current page
     flash("To be added.")
     return render_template("about.html")
+
+
+if __name__ == "__main__":
+    app.run()
