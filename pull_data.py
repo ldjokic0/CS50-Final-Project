@@ -4,11 +4,13 @@ from concurrent.futures import ProcessPoolExecutor
 from bs4 import BeautifulSoup
 from price_parser import Price
 
+
 class Item:
     def __init__(self, name, price, page):
         self.name = name
         self.price = price
         self.page = page
+
 
 # Get current exchange rate for RSD to EUR
 def current_exchange_rate():
@@ -16,19 +18,20 @@ def current_exchange_rate():
     # If there is problem with loading page, aproximate exchange rate will be used
     try:
         page = requests.get("https://www.kursna-lista.info/valuta/eur-evro")
-    except:
+    except requests.exceptions.RequestException as e:
         return 117.5
 
     soup = BeautifulSoup(page.content, 'lxml')
-    element_by_id=soup.find('div', {'id':'largeDisplay'})
+    element_by_id = soup.find('div', {'id': 'largeDisplay'})
     find_p = element_by_id.find_all('p')
 
     current_exchange_rate_string = find_p[0].getText()
     strings = current_exchange_rate_string.split()
-    # Third string in list 'strings' is the middle exchage rate 
-    rate = float(strings[3].replace(',','.'))
+    # Third string in list 'strings' is the middle exchage rate
+    rate = float(strings[3].replace(',', '.'))
 
     return rate
+
 
 # Convert strings to prices
 def adjust_price(price_string):
@@ -39,6 +42,7 @@ def adjust_price(price_string):
         # Slows down search due to conversion, alternative is to define constant value for exchange rate
         return round(float(price_and_currency.amount) / 117.5, 2)
         #return round(float(price_and_currency.amount) / current_exchange_rate(), 2)
+
 
 def kp_find_last_page(soup):
     # Classes are predifined by looking them up on the kupujemprodajem website
@@ -54,6 +58,7 @@ def kp_find_last_page(soup):
 
     return last_page
 
+
 def fetch_url_data(pg_url):
     try:
         resp = requests.get(pg_url)
@@ -61,12 +66,14 @@ def fetch_url_data(pg_url):
         print(f"Error occured during fetch data from url{pg_url}")
     else:
         return resp.content
-        
+
+
 def get_all_url_data(url_list):
     with ProcessPoolExecutor() as executor:
         resp = executor.map(fetch_url_data, url_list)
     return resp
-    
+
+
 def get_items(responses):
     # Empty dictionary that will contain name and price of the items
     item_list = []
@@ -77,8 +84,8 @@ def get_items(responses):
 
         soup = BeautifulSoup(response, 'html.parser')
 
-        item_names = soup.find_all('div', attrs={'class':'AdItem_name__80tI5'})
-        item_prices = soup.find_all('div', attrs={'class':'AdItem_price__jUgxi'})
+        item_names = soup.find_all('div', attrs={'class': 'AdItem_name__80tI5'})
+        item_prices = soup.find_all('div', attrs={'class': 'AdItem_price__jUgxi'})
 
         get_item_names = [name.getText() for name in item_names]
         get_item_prices = [price.getText() for price in item_prices]
@@ -93,6 +100,7 @@ def get_items(responses):
     total_time = "%s seconds" % (time.time() - start_time)
 
     return item_list, item_counter, total_time
+
 
 def kp_search(keyword):
     # Check and replace spaces in keyword
@@ -111,6 +119,7 @@ def kp_search(keyword):
     items, item_count, _ = get_items(responses)
 
     return items, item_count
+
 
 """ if __name__ == '__main__':
     items, item_count = kp_search("Dell Latitude E6540")
